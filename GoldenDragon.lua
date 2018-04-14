@@ -1,7 +1,7 @@
 local discordia = require('discordia')
-discordia.extensions()
-
 local timer = require("timer")
+local prefix = 'g?'
+discordia.extensions()
 
 local client = discordia.Client {
 	logFile = 'mybot.log',
@@ -13,34 +13,37 @@ local shouldUpdateGuildsCount = true
 client:on('ready', function()
 	print('Logged in as '.. client.user.username)
 	while true do
-  if shouldUpdateGuildsCount then
-		  client:setGame("g!help | "..#client.guilds.." Guilds")
-		  shouldUpdateGuildsCount = false
-  end
+		if shouldUpdateGuildsCount then
+			client:setGame("g?help | "..#client.guilds.." Guilds")
+			shouldUpdateGuildsCount = false
+		end
 		timer.sleep(1000)
 	end
+
 end)
 
 client:on('guildCreate', function()
   shouldUpdateGuildsCount = true
+  print("Invited to Guild")
 end)
 
 client:on('guildDelete', function()
   shouldUpdateGuildsCount = true
+  print("Kicked from Guild")
 end)
 
 client:on('messageCreate', function(message)
 
 	if message.author.id ~= "369244923574091790" then
-	
+
 		local guild = message.guild
 		local args = message.content:split(" ")
 		local member = message.member
-	
-		if message.content == "g!help" then
+
+		if message.content == prefix..'help' then
 			message.channel:send {
 				embed = {
-					title = "Heres the list of commands. The prefix is `g!`",
+					title = "Heres the list of commands. The prefix is `"..prefix.."`",
 					fields = {
 						{name = "ping", value = "Just a response testing.", inline = false},
 						{name = "sendnoods", value = "Sends dry, naked noods.", inline = false},
@@ -63,11 +66,13 @@ client:on('messageCreate', function(message)
 				}
 			}
 		end
-		if message.content == 'g!changelog' then
+
+		if message.content == prefix..'changelog' then
 			return message.channel:send {
-				content = '**GoldenDragon v1.1.0**\n-+Changed Game status',
+				content = '**GoldenDragon v1.1.0**\n+Changed Game status',
 			}
 		end
+
 		--swearlist = {'fuck','shit','cunt','bitch','asshole','slut','fucking','faggot'}
 		--for sl = 1, #swearlist do
 			--for swearscan = 1, #args do
@@ -81,7 +86,8 @@ client:on('messageCreate', function(message)
 				--end
 			--end
 		--end
-		if message.content == 'g!sendnoods' then
+
+		if message.content == prefix..'sendnoods' then
 			nrand = math.random(1,5)
 			if nrand == 1 then
 				return message.channel:send{
@@ -105,10 +111,12 @@ client:on('messageCreate', function(message)
 				}
 			end
 		end
+
 		if message.content == 'Hello' then
 			message.channel:send('Hello human :D')
 		end
-		if message.content == 'g!stop' then
+
+		if message.content == prefix..'stop' then
 			if message.author.id == "201443773077520384" then
 				message.channel:send('Stopping...')
 				client:stop()
@@ -116,19 +124,22 @@ client:on('messageCreate', function(message)
 				message.channel:send("Only bot owner is allowed to use this command!")
 			end
 		end
-		if message.content == 'g!restart' then
+
+		if message.content == prefix..'restart' then
 			if message.author.id == "201443773077520384" then
 				message.channel:send("Restarting...")
 				client:stop()
-				os.execute("reboot.bat")
+				os.execute("reboot2.bat")
 			else
 				message.channel:send("Only bot owner is allowed to use this command!")
 			end
 		end
-		if message.content == 'g!time' then
+
+		if message.content == prefix..'time' then
 			message.channel:send('**'..os.date()..'**')
 		end
-		--if args[1] == 'g!random' then
+
+		--if args[1] == 'g?random' then
 			--if not args[2] or not args[3] then
 			--	return message.channel:send('Imcomplete command')
 		--	else
@@ -137,7 +148,8 @@ client:on('messageCreate', function(message)
 			--	message.channel:send(math.random(least,most))
 		--	end
 		--end
-		if args[1] == 'g!ban' then
+
+		if args[1] == prefix..'ban' then
 			if not args[2] then
 				return message.channel:send('Incomplete command.')
 			else
@@ -149,7 +161,8 @@ client:on('messageCreate', function(message)
 				end
 			end
 		end
-		if args[1] == 'g!hackban' then
+
+		if args[1] == prefix..'hackban' then
 			if not args[2] then
 				return message.channel:send('Incomplete command.')
 			else
@@ -161,7 +174,8 @@ client:on('messageCreate', function(message)
 				end
 			end
 		end
-		if args[1] == 'g!unban' then
+
+		if args[1] == prefix..'unban' then
 			if not args[2] then
 				return message.channel:send('Incomplete command.')
 			else
@@ -173,26 +187,30 @@ client:on('messageCreate', function(message)
 				end
 			end
 		end
-		if args[1] == 'g!copycat' then 
+
+		if args[1] == prefix..'copycat' then 
 			table.remove(args,1)
-			require("timer").sleep(100)
+			timer.sleep(100)
 			message:delete()
 			message.channel:send(table.concat(args," "))
 		end
-		if args[1] == 'g!ping' then
+
+		if args[1] == prefix..'ping' then
 			local response = message:reply("Pong!")
 			if response then
 				response:setContent("Pong! ".."`"..math.abs(math.round((response.createdAt - message.createdAt)*1000)).." ms`")
 			end
 		end
-		if args[1] == "g!hug" then
+
+		if args[1] == prefix..'hug' then
 			table.remove(args,1)
 			message.channel:send{
 				mentions = {message.author},
 				content = 'hugged '..table.concat(args," ")..".",
 			}
 		end
-		if args[1] == 'g!8ball' then
+
+		if args[1] == prefix..'8ball' then
 			if not args[2] then
 				return message.channel:send('You did not state the question.')
 			else
@@ -203,44 +221,44 @@ client:on('messageCreate', function(message)
 				}
 			end
 		end
-		if args[1] == 'g!purge' then
+
+		if args[1] == prefix..'purge' then
 			if message.member:hasPermission(8) == true then
-				require("timer").sleep(100)
+				timer.sleep(100)
 				message.channel:bulkDelete(args[2]+1)
-				require("timer").sleep(100)
+				timer.sleep(100)
 				message.channel:send("Purged "..args[2].." Messages.")
 			else
 				message.channel:send('You do not have enough permissions to perform this command.')
 			end
 		end
+
 		local sandbox = {
 			math = math,
 			string = string,
-			discordia = require('discordia'),
+			discordia = discordia,
 			client = client,
 			guild = guild
 		}
+
 		local function code(str)
 			message.channel:send(string.format('```\n%s```', str))
 		end
+
 		local function exec(arg)
-		
 			if not arg then return end
-			
 			sandbox.message = message
-			
 			local fn, syntaxError = load(arg, 'DiscordBot', 't', sandbox)
 			if not fn then return code(syntaxError) end
-			
 			local success, runtimeError = pcall(fn)
 			if not success then return code(runtimeError) end
-			
 		end
-		if args[1] == 'g!eval' then
+
+		if args[1] == prefix..'eval' then
 			if not args[2] then
 				return message.channel:send('Incomplete Command!')
 			else
-				if message.author.id == '201443773077520384' or message.author.id == '196443959558406144' then
+				if message.author.id == client.owner.id or message.author.id == '196443959558406144' then
 					table.remove(args,1)
 					earg = table.concat(args," ")
 					code(earg)
@@ -250,10 +268,13 @@ client:on('messageCreate', function(message)
 				end
 			end
 		end
+
 	end
 end)
 
-local token = os.getenv("GoldenDragon_Token")
+
+
+local token = os.getenv('GoldenDragon_Token')
 
 if not token then
   error("Please set the token to an environment variable called 'GoldenDragon_Token'")
