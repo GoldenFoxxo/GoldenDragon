@@ -253,10 +253,10 @@ client:on('messageCreate', function(message)
 	end
 end)
 
-local token = os.getenv("GoldenDragon_DEV_Token")
+local token = os.getenv("GoldenDragon_Token")
 
 if not token then
-  error("Please set the token to an environment variable called 'GoldenDragon_DEV_Token'")
+  error("Please set the token to an environment variable called 'GoldenDragon_Token'")
 end
 
 client:run('Bot '..token)
