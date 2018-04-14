@@ -1,6 +1,6 @@
 local discordia = require('discordia')
 local timer = require("timer")
-local prefix = 'g?'
+local prefix = 'g!'
 discordia.extensions()
 
 local client = discordia.Client {
@@ -14,7 +14,7 @@ client:on('ready', function()
 	print('Logged in as '.. client.user.username)
 	while true do
 		if shouldUpdateGuildsCount then
-			client:setGame("g?help | "..#client.guilds.." Guilds")
+			client:setGame(prefix.."help | "..#client.guilds.." Guilds")
 			shouldUpdateGuildsCount = false
 		end
 		timer.sleep(1000)
