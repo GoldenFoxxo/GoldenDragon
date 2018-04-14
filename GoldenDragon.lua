@@ -1,18 +1,32 @@
 local discordia = require('discordia')
-local client = discordia.Client()
 discordia.extensions()
+
+local timer = require("timer")
 
 local client = discordia.Client {
 	logFile = 'mybot.log',
 	cacheAllMembers = true,
 }
 
+local shouldUpdateGuildsCount = true
+
 client:on('ready', function()
 	print('Logged in as '.. client.user.username)
 	while true do
-		client:setGame("g!help | "..#client.guilds.." Guilds")
-		require("timer").sleep(5000)
+  if shouldUpdateGuildsCount then
+		  client:setGame("g!help | "..#client.guilds.." Guilds")
+		  shouldUpdateGuildsCount = false
+  end
+		timer.sleep(1000)
 	end
+end)
+
+client:on('guildCreate', function()
+  shouldUpdateGuildsCount = true
+end)
+
+client:on('guildDelete', function()
+  shouldUpdateGuildsCount = true
 end)
 
 client:on('messageCreate', function(message)
