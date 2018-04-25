@@ -1,6 +1,6 @@
 local discordia = require('discordia')
-local timer = require("timer")
-local prefix = 'g!'
+local timer = require('timer')
+local prefix = 'g?'
 discordia.extensions()
 
 local client = discordia.Client {
@@ -14,7 +14,7 @@ client:on('ready', function()
 	print('Logged in as '.. client.user.username)
 	while true do
 		if shouldUpdateGuildsCount then
-			client:setGame(prefix.."help | "..#client.guilds.." Guilds")
+			client:setGame(prefix..'help | '..#client.guilds..' Guilds')
 			shouldUpdateGuildsCount = false
 		end
 		timer.sleep(1000)
@@ -24,42 +24,57 @@ end)
 
 client:on('guildCreate', function()
   shouldUpdateGuildsCount = true
-  print("Invited to Guild")
+  print('Invited to Guild')
 end)
 
 client:on('guildDelete', function()
   shouldUpdateGuildsCount = true
-  print("Kicked from Guild")
+  print('Kicked from Guild')
 end)
 
 client:on('messageCreate', function(message)
 
-	if message.author.id ~= "369244923574091790" then
+	if message.author.id ~= '369244923574091790' then
+		
+		--Debug use only
+		--print('Guild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nUser: '..message.author.name..'\nMessage: '..message.content..'\n')
 
 		local guild = message.guild
-		local args = message.content:split(" ")
+		local args = message.content:split(' ')
 		local member = message.member
-
+		local logc = '434836657506746378'
+		
 		if message.content == prefix..'help' then
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
 			message.channel:send {
 				embed = {
-					title = "Heres the list of commands. The prefix is `"..prefix.."`",
+					title = 'Heres the list of commands. The prefix is `'..prefix..'`',
 					fields = {
-						{name = "ping", value = "Just a response testing.", inline = false},
-						{name = "sendnoods", value = "Sends dry, naked noods.", inline = false},
-						{name = "time", value = "Tells you about date and time.", inline = false},
-						{name = "copycat", value = "Makes bot say what you said.", inline = false},
-						{name = "ban", value = "Bans users. Reason and time not included, mentions required.", inline = false},
-						{name = "random", value = "Picks out random number you placed in input, eg. random 0 10", inline = false},
-						{name = "unban", value = "Unbans users. ID required to unban.", inline = false},
-						{name = "8ball", value = "Magic 8 ball and it answers your burning questions.", inline = false},
-						{name = "hackban", value = "Bans users by id. *in development and check bans in server settings to see if its successful ban*", inline = false},
-						{name = "stop", value = "Stops or disables the bot. *Bot owner command only!*", inline = false},
-						{name = "restart", value = "Restarts the bot. *Bot owner command only!*", inline = false},
-						{name = "changelog", value = "Shows you information and version what updated about this bot.", inline = false},
-						{name = "eval", value = "Evalulates code in Lua sandbox mode. *In development*", inline = false},
-						{name = "purge", value = "Deletes amount of messages given. *Glitched or Bugged*", inline = false},
-						{name = "hug", value = "Hug someone!", inline = false}
+						{name = 'ping', value = 'Just a response testing.', inline = false},
+						{name = 'sendnoods', value = 'Sends dry, naked noods.', inline = false},
+						{name = 'time', value = 'Tells you about date and time.', inline = false},
+						{name = 'copycat', value = 'Makes bot say what you said.', inline = false},
+						{name = 'ban', value = 'Bans users. Reason and time not included, mentions required.', inline = false},
+						{name = 'random', value = 'Picks out random number you placed in input, eg. random 0 10', inline = false},
+						{name = 'unban', value = 'Unbans users. ID required to unban.', inline = false},
+						{name = '8ball', value = 'Magic 8 ball and it answers your burning questions.', inline = false},
+						{name = 'hackban', value = 'Bans users by id. *in development and check bans in server settings to see if its successful ban*', inline = false},
+						{name = 'stop', value = 'Stops or disables the bot. *Bot owner command only!*', inline = false},
+						{name = 'restart', value = 'Restarts the bot. *Bot owner command only!*', inline = false},
+						{name = 'changelog', value = 'Shows you information and version what updated about this bot.', inline = false},
+						{name = 'eval', value = 'Evalulates code in Lua sandbox mode. *In development*', inline = false},
+						{name = 'purge', value = 'Deletes amount of messages given. *Glitched or Bugged*', inline = false},
+						{name = 'hug', value = 'Hug someone!', inline = false}
 					},
 					color = discordia.Color.fromRGB(255, 215, 0).value,
 					timestamp = discordia.Date():toISO('T', 'Z')
@@ -68,16 +83,42 @@ client:on('messageCreate', function(message)
 		end
 
 		if message.content == prefix..'changelog' then
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
 			return message.channel:send {
-				content = '**GoldenDragon v1.1.0**\n+Changed Game status',
+				content = '**GoldenDragon v1.2**\n+Added logging system.\n+Added independant prefix system.',
 			}
 		end
-
-		--swearlist = {'fuck','shit','cunt','bitch','asshole','slut','fucking','faggot'}
+		
+		--if message.content == prefix..'prefix' then
+			--if message.member:hasPermission(8) == true then
+				--if not args[2] then
+					--return message.channel:send('Incomplete command.')
+				--else
+					--pconf = io.open("config.txt", "w")
+					--pconf:write("{'"..message.guild.id.."','"..args[2].."'}")
+					--pconf:close()
+					--return message.channel:send("Prefix saved as `"..args[2].."`")
+				--end
+			--else
+				--return message.channel:send('You do not have enough permissions to perform this command.')
+			--end
+		--end
+		
+		--swearlist = {'fuck','shit','cunt','bitch','asshole','slut','fucking','faggot','nigger'}
 		--for sl = 1, #swearlist do
 			--for swearscan = 1, #args do
 				--if swearlist[sl] == string.lower(args[swearscan]) then
-					--require("timer").sleep(100)
+					--require('timer').sleep(100)
 					--message:delete()
 					--return message.channel:send{
 						--mentions = {message.author},
@@ -88,10 +129,21 @@ client:on('messageCreate', function(message)
 		--end
 
 		if message.content == prefix..'sendnoods' then
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
 			nrand = math.random(1,5)
 			if nrand == 1 then
 				return message.channel:send{
-					file = "nood1.jpg",
+					file = 'nood1.jpg',
 				}
 			elseif nrand == 2 then
 				return message.channel:send{
@@ -113,29 +165,73 @@ client:on('messageCreate', function(message)
 		end
 
 		if message.content == 'Hello' then
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Responder',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
 			message.channel:send('Hello human :D')
 		end
 
 		if message.content == prefix..'stop' then
-			if message.author.id == "201443773077520384" then
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
+			if message.author.id == '201443773077520384' then
 				message.channel:send('Stopping...')
 				client:stop()
 			else
-				message.channel:send("Only bot owner is allowed to use this command!")
+				message.channel:send('Only bot owner is allowed to use this command!')
 			end
 		end
 
 		if message.content == prefix..'restart' then
-			if message.author.id == "201443773077520384" then
-				message.channel:send("Restarting...")
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
+			if message.author.id == '201443773077520384' then
+				message.channel:send('Restarting...')
 				client:stop()
-				os.execute("reboot2.bat")
+				os.execute('reboot.bat')
 			else
-				message.channel:send("Only bot owner is allowed to use this command!")
+				message.channel:send('Only bot owner is allowed to use this command!')
 			end
 		end
 
 		if message.content == prefix..'time' then
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
 			message.channel:send('**'..os.date()..'**')
 		end
 
@@ -150,6 +246,17 @@ client:on('messageCreate', function(message)
 		--end
 
 		if args[1] == prefix..'ban' then
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
 			if not args[2] then
 				return message.channel:send('Incomplete command.')
 			else
@@ -163,6 +270,17 @@ client:on('messageCreate', function(message)
 		end
 
 		if args[1] == prefix..'hackban' then
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
 			if not args[2] then
 				return message.channel:send('Incomplete command.')
 			else
@@ -176,6 +294,17 @@ client:on('messageCreate', function(message)
 		end
 
 		if args[1] == prefix..'unban' then
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
 			if not args[2] then
 				return message.channel:send('Incomplete command.')
 			else
@@ -189,32 +318,76 @@ client:on('messageCreate', function(message)
 		end
 
 		if args[1] == prefix..'copycat' then 
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
 			table.remove(args,1)
 			timer.sleep(100)
 			message:delete()
-			message.channel:send(table.concat(args," "))
+			message.channel:send(table.concat(args,' '))
 		end
 
 		if args[1] == prefix..'ping' then
-			local response = message:reply("Pong!")
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
+			local response = message:reply('Pong!')
 			if response then
-				response:setContent("Pong! ".."`"..math.abs(math.round((response.createdAt - message.createdAt)*1000)).." ms`")
+				response:setContent('Pong! '..'`'..math.abs(math.round((response.createdAt - message.createdAt)*1000))..' ms`')
 			end
 		end
 
 		if args[1] == prefix..'hug' then
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
 			table.remove(args,1)
 			message.channel:send{
 				mentions = {message.author},
-				content = 'hugged '..table.concat(args," ")..".",
+				content = 'hugged '..table.concat(args,' ')..'.',
 			}
 		end
 
 		if args[1] == prefix..'8ball' then
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
 			if not args[2] then
 				return message.channel:send('You did not state the question.')
 			else
-				ballc = {"Yes.","No.","My thoughts says no.","My thoughts says yes.","Probably, probably not.","Outlook not so good.","Yes, absolutely.","No, definitely not.","My reply is no.","My reply is yes","Outlook good"}
+				ballc = {'Yes.','No.','My thoughts says no.','My thoughts says yes.','Probably, probably not.','Outlook not so good.','Yes, absolutely.','No, definitely not.','My reply is no.','My reply is yes','Outlook good'}
 				message.channel:send{
 					mentions = {message.author},
 					content = ballc[math.random(1,#ballc)],
@@ -223,11 +396,22 @@ client:on('messageCreate', function(message)
 		end
 
 		if args[1] == prefix..'purge' then
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
 			if message.member:hasPermission(8) == true then
 				timer.sleep(100)
 				message.channel:bulkDelete(args[2]+1)
 				timer.sleep(100)
-				message.channel:send("Purged "..args[2].." Messages.")
+				message.channel:send('Purged '..args[2]..' Messages.')
 			else
 				message.channel:send('You do not have enough permissions to perform this command.')
 			end
@@ -238,6 +422,7 @@ client:on('messageCreate', function(message)
 			string = string,
 			discordia = discordia,
 			client = client,
+			io = io,
 			guild = guild
 		}
 
@@ -255,12 +440,23 @@ client:on('messageCreate', function(message)
 		end
 
 		if args[1] == prefix..'eval' then
+			client:getChannel(logc):send{
+				embed = {
+					title = 'Commands Used',
+					fields = {
+						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+					},
+					color = discordia.Color.fromRGB(255, 215, 0).value,
+					timestamp = discordia.Date():toISO('T', 'Z')
+				}
+			}
 			if not args[2] then
 				return message.channel:send('Incomplete Command!')
 			else
 				if message.author.id == client.owner.id or message.author.id == '196443959558406144' then
 					table.remove(args,1)
-					earg = table.concat(args," ")
+					earg = table.concat(args,' ')
 					code(earg)
 					exec(earg)
 				else
@@ -272,12 +468,10 @@ client:on('messageCreate', function(message)
 	end
 end)
 
-
-
 local token = os.getenv('GoldenDragon_Token')
 
 if not token then
-  error("Please set the token to an environment variable called 'GoldenDragon_Token'")
+  error("Please set the token to an environment variable called 'GoldenDragon_DEV_Token'")
 end
 
 client:run('Bot '..token)
