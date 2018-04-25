@@ -1,6 +1,6 @@
 local discordia = require('discordia')
 local timer = require('timer')
-local prefix = 'g?'
+local prefix = 'g!'
 discordia.extensions()
 
 local client = discordia.Client {
