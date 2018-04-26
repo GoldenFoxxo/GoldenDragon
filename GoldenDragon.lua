@@ -35,6 +35,8 @@ end)
 client:on('messageCreate', function(message)
 
 	if message.author.bot == false then
+		if not message.guild then
+		else
 		
 		--Debug use only
 		--print('Guild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nUser: '..message.author.name..'\nMessage: '..message.content..'\n')
@@ -464,7 +466,7 @@ client:on('messageCreate', function(message)
 				end
 			end
 		end
-
+		end
 	end
 end)
 
