@@ -34,7 +34,7 @@ end)
 
 client:on('messageCreate', function(message)
 
-	if message.author.id ~= '369244923574091790' then
+	if message.author.bot == false then
 		
 		--Debug use only
 		--print('Guild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nUser: '..message.author.name..'\nMessage: '..message.content..'\n')
