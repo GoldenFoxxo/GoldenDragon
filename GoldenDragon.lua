@@ -130,41 +130,41 @@ client:on('messageCreate', function(message)
 			--end
 		--end
 
-		if message.content == prefix..'sendnoods' then
-			client:getChannel(logc):send{
-				embed = {
-					title = 'Commands Used',
-					fields = {
-						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
-						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
-					},
-					color = discordia.Color.fromRGB(255, 215, 0).value,
-					timestamp = discordia.Date():toISO('T', 'Z')
-				}
-			}
-			nrand = math.random(1,5)
-			if nrand == 1 then
-				return message.channel:send{
-					file = 'nood1.jpg',
-				}
-			elseif nrand == 2 then
-				return message.channel:send{
-					file = 'nood2.jpg',
-				}
-			elseif nrand == 3 then
-				return message.channel:send{
-					file = 'nood3.png',
-				}
-			elseif nrand == 4 then
-				return message.channel:send{
-					file = 'nood4.jpg',
-				}
-			elseif nrand == 5 then
-				return message.channel:send{
-					file = 'nood5.jpg',
-				}
-			end
-		end
+		--if message.content == prefix..'sendnoods' then
+		--	client:getChannel(logc):send{
+		--		embed = {
+		--			title = 'Commands Used',
+		--			fields = {
+		--				{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+		--				{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+		--			},
+		--			color = discordia.Color.fromRGB(255, 215, 0).value,
+		--			timestamp = discordia.Date():toISO('T', 'Z')
+		--		}
+		--	}
+		--	nrand = math.random(1,5)
+		--	if nrand == 1 then
+		--		return message.channel:send{
+		--			file = 'nood1.jpg',
+		--		}
+		--	elseif nrand == 2 then
+		--		return message.channel:send{
+		--			file = 'nood2.jpg',
+		--		}
+		--	elseif nrand == 3 then
+		--		return message.channel:send{
+		--			file = 'nood3.png',
+		--		}
+		--	elseif nrand == 4 then
+		--		return message.channel:send{
+		--			file = 'nood4.jpg',
+		--		}
+		--	elseif nrand == 5 then
+		--		return message.channel:send{
+		--			file = 'nood5.jpg',
+		--		}
+		--	end
+		--end
 
 		if message.content == 'Hello' then
 			client:getChannel(logc):send{
@@ -201,26 +201,26 @@ client:on('messageCreate', function(message)
 			end
 		end
 
-		if message.content == prefix..'restart' then
-			client:getChannel(logc):send{
-				embed = {
-					title = 'Commands Used',
-					fields = {
-						{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
-						{name = 'Full Information', value = '```'..message.content..'```', inline = false}
-					},
-					color = discordia.Color.fromRGB(255, 215, 0).value,
-					timestamp = discordia.Date():toISO('T', 'Z')
-				}
-			}
-			if message.author.id == '201443773077520384' then
-				message.channel:send('Restarting...')
-				client:stop()
-				os.execute('reboot.bat')
-			else
-				message.channel:send('Only bot owner is allowed to use this command!')
-			end
-		end
+		--if message.content == prefix..'restart' then
+		--	client:getChannel(logc):send{
+		--		embed = {
+		--			title = 'Commands Used',
+		--			fields = {
+		--				{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+		--				{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+		--			},
+		--			color = discordia.Color.fromRGB(255, 215, 0).value,
+		--			timestamp = discordia.Date():toISO('T', 'Z')
+		--		}
+		--	}
+		--	if message.author.id == '201443773077520384' then
+		--		message.channel:send('Restarting...')
+		--		client:stop()
+		--		os.execute('reboot.bat')
+		--	else
+		--		message.channel:send('Only bot owner is allowed to use this command!')
+		--	end
+		--end
 
 		if message.content == prefix..'time' then
 			client:getChannel(logc):send{
@@ -473,7 +473,7 @@ end)
 local token = os.getenv('GoldenDragon_Token')
 
 if not token then
-  error("Please set the token to an environment variable called 'GoldenDragon_DEV_Token'")
+  error("Please set the token to an environment variable called 'GoldenDragon_Token'")
 end
 
 client:run('Bot '..token)
