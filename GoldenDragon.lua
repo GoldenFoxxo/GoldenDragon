@@ -470,7 +470,8 @@ client:on('messageCreate', function(message)
 	end
 end)
 
-token = io.open('config.txt','w')
+token = io.open('config.txt','r')
+toke = token:read('*a')
 token:close()
 
 client:run('Bot '..toke)
