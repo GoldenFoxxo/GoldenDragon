@@ -470,10 +470,13 @@ client:on('messageCreate', function(message)
 	end
 end)
 
-local token = os.getenv('GoldenDragon_Token')
+local token = io.open('config.txt','r')
 
 if not token then
-  error("Please set the token to an environment variable called 'GoldenDragon_Token'")
+	token:close()
+	error("No token found")
+else
+	toke = token:read('*a')
 end
 
-client:run('Bot '..token)
+client:run('Bot '..toke)
