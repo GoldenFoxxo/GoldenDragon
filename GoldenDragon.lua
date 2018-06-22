@@ -470,9 +470,11 @@ client:on('messageCreate', function(message)
 	end
 end)
 
-local token = io.open('config.txt','r')
+token = io.open('config.txt','r')
 
 if not token then
+	token:close()
+	token = io.open('config.txt','w')
 	token:close()
 	error("No token found")
 else
