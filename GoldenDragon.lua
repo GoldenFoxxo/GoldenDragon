@@ -470,15 +470,7 @@ client:on('messageCreate', function(message)
 	end
 end)
 
-token = io.open('config.txt','r')
-
-if not token then
-	token:close()
-	token = io.open('config.txt','w')
-	token:close()
-	error("No token found")
-else
-	toke = token:read('*a')
-end
+token = io.open('config.txt','w')
+token:close()
 
 client:run('Bot '..toke)
