@@ -1,9 +1,13 @@
 local discordia = require('discordia')
 local timer = require('timer')
+local uv = require('uv')
 local prefix = 'g!'
 local http = require('coro-http')
 local sandbox = {}
+local sw = discordia.Stopwatch()
 discordia.extensions()
+
+sw:start()
 
 local client = discordia.Client {
 	logFile = 'mybot.log',
@@ -101,7 +105,8 @@ client:on('messageCreate', function(message)
 							{name = 'eval', value = 'Evalulates code in Lua sandbox mode. *In development*', inline = false},
 							{name = 'purge', value = 'Deletes amount of messages given. *Glitched or Bugged*', inline = false},
 							{name = 'hug', value = 'Hug someone!', inline = false},
-							{name = 'info', value = 'Tells you information about this bot.', inline = false}
+							{name = 'info', value = 'Tells you information about this bot.', inline = false},
+							{name = 'uptime', value = 'Uptime for this bot.', inline = false}
 						},
 						color = discordia.Color.fromRGB(255, 215, 0).value,
 						timestamp = discordia.Date():toISO('T', 'Z')
@@ -213,10 +218,10 @@ client:on('messageCreate', function(message)
 				gldbot = message.guild:getMember('433784402347032576')
 				return message.channel:send{
 					embed = {
-						title = '**GoldenDragon Dev**',
+						title = '**GoldenDragon**',
 						thumbnail = {url = gldbot.avatarURL},
 						fields = {
-							{name = '**Version**', value = 'V1.3\n**Library**\nDiscordia\n**Version**\n'.._VERSION..'\n**Information**\nThis bot was created and hosted by MLG Golden.\nAnd also has few commands which includes moderation, fun, and soon-to-be community idea given that can be implemented into this bot.\n**Guilds**\n'..#client.guilds..'\n**Members**\n'..out..'\n**Support**\nhttps://discord.gg/G9NcUTE', inline = false}
+							{name = '**Bot Version**', value = 'V1.3\n**Library**\nDiscordia\n**Lib Version**\n'.._VERSION..'\n**Information**\nThis bot was created and hosted by MLG Golden.\nAnd also has few commands which includes moderation, fun, and soon-to-be community idea given that can be implemented into this bot.\n**Guilds**\n'..#client.guilds..'\n**Members**\n'..out..'\n**Support**\nhttps://discord.gg/G9NcUTE', inline = false}
 						},
 						color = discordia.Color.fromRGB(255, 215, 0).value,
 						timestamp = discordia.Date():toISO('T', 'Z')
@@ -259,7 +264,7 @@ client:on('messageCreate', function(message)
 				if message.author.id == '201443773077520384' then
 					message.channel:send('Restarting...')
 					client:stop()
-					os.execute('reboot.bat')
+					os.execute('start.bat')
 				else
 					message.channel:send('Only bot owner is allowed to use this command!')
 				end
@@ -306,8 +311,12 @@ client:on('messageCreate', function(message)
 					return message.channel:send('Incomplete command.')
 				else
 					if message.member:hasPermission(8) == true then
-						message.guild:banUser(message.mentionedUsers:iter()())
-						return message.channel:send('**'..args[2]..' banned!**')
+						if message.guild:getMember(args[2]) then
+							message.guild:banUser(message.mentionedUsers:iter()())
+							return message.channel:send('**'..args[2]..' banned!**')
+						else
+							return message.channel:send('Unable to ban "'..args[2]..'"')
+						end
 					else
 						return message.channel:send('You do not have enough permissions to perform this command.')
 					end
@@ -381,6 +390,12 @@ client:on('messageCreate', function(message)
 				message.channel:send(table.concat(args,' '))
 			end
 
+			if args[1] == prefix..'teehee' then
+				timer.sleep(500)
+				message:delete()
+				return message.channel:send{file = 'ok.png'}
+			end
+
 			if args[1] == prefix..'ping' then
 				client:getChannel(logc):send{
 					embed = {
@@ -445,6 +460,21 @@ client:on('messageCreate', function(message)
 				end
 			end
 
+			if args[1] == prefix..'uptime' then
+				client:getChannel(logc):send{
+					embed = {
+						title = 'Commands Used',
+						fields = {
+							{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+							{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+						},
+						color = discordia.Color.fromRGB(255, 215, 0).value,
+						timestamp = discordia.Date():toISO('T', 'Z')
+					}
+				}
+				return message.channel:send('**Bot Uptime**\n'..tostring(sw:getTime())..'\n**System Uptime**\n'..tostring(discordia.Time.fromSeconds(uv.uptime())))
+			end
+
 			if args[1] == prefix..'purge' then
 				if not args[2] then
 					return message.channel:send('Incomplete Command.')
@@ -461,12 +491,16 @@ client:on('messageCreate', function(message)
 						}
 					}
 					if message.member:hasPermission(8) == true then
-						timer.sleep(100)
-						message.channel:bulkDelete(message.channel:getMessages(args[2]+1))
-						timer.sleep(100)
-						message.channel:send('Purged '..args[2]..' Messages.')
-						timer.sleep(3000)
-						return deleteself()
+						if tonumber(args[2]) then
+							timer.sleep(100)
+							message.channel:bulkDelete(message.channel:getMessages(args[2]+1))
+							timer.sleep(100)
+							message.channel:send('Purged '..args[2]..' Messages.')
+							timer.sleep(3000)
+							return deleteself()
+						else
+							return message.channel:send('Please use number value.')
+						end
 					else
 						message.channel:send('You do not have enough permissions to perform this command.')
 					end
@@ -476,6 +510,7 @@ client:on('messageCreate', function(message)
 			sandbox.require = require
 			sandbox.client = client
 			sandbox.http = http
+			sandbox.timer = timer
 			sandbox.guild = guild
 			sandbox.discordia = discordia
 			sandbox.print = function(...)
@@ -511,7 +546,7 @@ client:on('messageCreate', function(message)
 				if not args[2] then
 					return message.channel:send('Incomplete Command!')
 				else
-					if message.author.id == client.owner.id or message.author.id == '196443959558406144' then
+					if message.author.id == client.owner.id or message.author.id == '196443959558406144' or message.author.id == '187673891018244096' then
 						table.remove(args,1)
 						earg = table.concat(args,' ')
 						code(earg)
