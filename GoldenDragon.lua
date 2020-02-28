@@ -123,7 +123,6 @@ client:on('messageCreate', function(message)
 							{name = 'restart', value = 'Restarts the bot. *Bot owner command only!*', inline = false},
 							{name = 'hump', value = 'Humps the user.', inline = false},
 							{name = 'spray', value = 'Sprays the user.', inline = false},
-							{name = 'fur', value = 'Determines the furry level about yourself.', inline = false},
 							{name = 'changelog', value = 'Shows you information and version what updated about this bot.', inline = false},
 							{name = 'purge', value = 'Deletes amount of messages given.', inline = false},
 							{name = 'hug', value = 'Hug someone!', inline = false},
@@ -149,7 +148,7 @@ client:on('messageCreate', function(message)
 					}
 				}
 				return message.channel:send {
-					content = '**GoldenDragon v1.4**\n+added fur command\n+added music function (Still experimental/disabled)\n+added guild log code\n+added systeminfo command\n+added hump command\n+added spray command\n*modified some code'
+					content = '**GoldenDragon v1.6**\n+added music function (Still experimental/disabled)\n+added guild log code\n+added systeminfo command\n+added hump command\n+added spray command\n*modified some code'
 				}
 			end
 
@@ -413,12 +412,11 @@ client:on('messageCreate', function(message)
 				for guild in client.guilds:iter() do
 					out = out + guild.totalMemberCount
 				end
-				gldbot = message.guild:getMember('369244923574091790')
 				return message.channel:send{
 					embed = {
-						title = '**GoldenDragon Dev**',
-						thumbnail = {url = gldbot.avatarURL},
-						description = '**Bot Version**\nV1.4\n**Library**\nDiscordia\n**Lib Version**\n'.._VERSION..'\n**Information**\nThis bot was created and hosted by MLG Golden.\nAnd also has few commands which includes moderation, fun, and soon-to-be community idea given that can be implemented into this bot.\n**Guilds**\n'..#client.guilds..'\n**Members**\n'..out..'\n**Support**\nhttps://discord.gg/G9NcUTE',
+						title = '**GoldenDragon**',
+						thumbnail = {url = client.user.avatarURL},
+						description = '**Bot Version**\nV1.6\n**Library**\nDiscordia\n**Lib Version**\n'.._VERSION..'\n**Information**\nThis bot was created and hosted by MLG Golden.\nAnd also has few commands which includes moderation, fun, and soon-to-be community idea given that can be implemented into this bot.\n**Guilds**\n'..#client.guilds..'\n**Members**\n'..out..'\n**Support**\nhttps://discord.gg/G9NcUTE',
 						color = discordia.Color.fromRGB(255, 215, 0).value,
 						timestamp = discordia.Date():toISO('T', 'Z')
 					}
@@ -713,7 +711,7 @@ client:on('messageCreate', function(message)
 			local function exec(arg)
 				if not arg then return end
 				sandbox.message = message
-				local fn, syntaxError = load(arg, 'GoldenDragon Dev', 't', sandbox)
+				local fn, syntaxError = load(arg, 'GoldenDragon', 't', sandbox)
 				if not fn then return code(syntaxError) end
 				local success, runtimeError = pcall(fn)
 				if not success then
