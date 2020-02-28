@@ -12,6 +12,11 @@ local sandbox = {}
 local sw = discordia.Stopwatch()
 local answ = {'What are you doing?','Checking out my new command eh?','What is this...','Hello Worl- wait why are you stalking me?','Pretty sure hes trying to do something.'}
 local loopaudio = false
+local ts = tostring
+local cpu = uv.cpu_info()
+local threads = #cpu
+local cpumodel = cpu[1].model
+local mem = math.floor(collectgarbage('count')/1000)
 discordia.extensions()
 
 sw:start()
@@ -34,14 +39,38 @@ client:on('ready', function()
 	end
 end)
 
-client:on('guildCreate', function()
-  shouldUpdateGuildsCount = true
-  print('Invited to Guild')
+client:on('guildCreate', function(gj)
+  	shouldUpdateGuildsCount = true
+  	client:getGuild('425655510415572993'):getChannel('683049572221714485'):send{
+	  	embed = {
+			title = 'Join',
+			thumbnail = {url = gj.iconURL},
+			fields = {
+				{name = 'Name', value = gj.name..'\n'..gj.id, inline = true},
+				{name = 'Owner', value = gj.owner.name..'\n'..gj.owner.id, inline = true},
+				{name = 'Membercount', value = gj.totalMemberCount, inline = true}
+			},
+			color = discordia.Color.fromRGB(255, 215, 0).value,
+			timestamp = discordia.Date():toISO('T', 'Z')
+		}
+	}
 end)
 
-client:on('guildDelete', function()
-  shouldUpdateGuildsCount = true
-  print('Kicked from Guild')
+client:on('guildDelete', function(gl)
+  	shouldUpdateGuildsCount = true
+  	client:getGuild('425655510415572993'):getChannel('683049572221714485'):send{
+		embed = {
+			title = 'Leave',
+	  		thumbnail = {url = gl.iconURL},
+	  		fields = {
+		  		{name = 'Name', value = gl.name..'\n'..gl.id, inline = true},
+		  		{name = 'Owner', value = gl.owner.name..'\n'..gl.owner.id, inline = true},
+		  		{name = 'Membercount', value = gl.totalMemberCount, inline = true}
+	  		},
+	  		color = discordia.Color.fromRGB(255, 215, 0).value,
+	  		timestamp = discordia.Date():toISO('T', 'Z')
+		}
+	}
 end)
 
 client:on('messageCreate', function(message)
@@ -58,23 +87,6 @@ client:on('messageCreate', function(message)
 			
 			local function deleteself()
 				message.channel:bulkDelete(message.channel:getMessages(1))
-			end
-		
-			local function rconfig()
-				message.channel:send('`Reading data...`')
-				rconfig = io.open('config.txt', 'r')
-				rdata = rconfig:read('*a')
-				rconfig:close()
-				message.channel:send('`Read data success`')
-				return message.channel:send(rdata)
-			end
-		
-			local function wconfig(wdata)
-				message.channel:send('`Writing data...`')
-				wconfig = io.open('config.txt', 'w')
-				wconfig:write(wdata)
-				wconfig:close()
-				message.channel:send('`Write data success`')
 			end
 			
 			if message.content == prefix..'help' then
@@ -94,24 +106,23 @@ client:on('messageCreate', function(message)
 						title = 'Heres the list of commands. The prefix is `'..prefix..'`',
 						fields = {
 							{name = 'ping', value = 'Just a response testing.', inline = false},
-							{name = 'play', value = 'Plays a audio file from youtube.', inline = false},
-							{name = 'stopaudio', value = 'Stops the audio.', inline = false},
-							{name = 'pause', value = 'Pauses the audio stream.', inline = false},
-							{name = 'loopaudio', value = 'Loops the audio.', inline = false},
-							{name = 'np', value = 'Gives you info on what audio your listening now.', inline = false},
-							{name = 'sendnoods', value = 'Sends dry, naked noods.', inline = false},
+							{name = 'play', value = 'Plays a audio file from youtube. *In development (disabled)*', inline = false},
+							{name = 'stopaudio', value = 'Stops the audio. *In development (disabled)*', inline = false},
+							{name = 'pause', value = 'Pauses the audio stream. *In development (disabled)*', inline = false},
+							{name = 'loopaudio', value = 'Loops the audio. *In development (disabled)*', inline = false},
+							{name = 'np', value = 'Gives you info on what audio your listening now. *In development (disabled)*', inline = false},
+							{name = 'systeminfo', value = 'Gives you a list of information of system that bot is being hosted on.', inline = false},
+							{name = 'hackban', value = 'Bans offline user by using ID only.', inline = false},
 							{name = 'time', value = 'Tells you about date and time.', inline = false},
-							{name = 'copycat', value = 'Makes bot say what you said.', inline = false},
+							{name = 'screenshot', value = 'grabs screenshot from server.', inline = false},
+							{name = 'say', value = 'Makes bot say what you said.', inline = false},
 							{name = 'ban', value = 'Bans users. Reason and time not included, mentions required.', inline = false},
-							{name = 'random', value = 'Picks out random number you placed in input, eg. random 0 10', inline = false},
 							{name = 'unban', value = 'Unbans users. ID required to unban.', inline = false},
 							{name = '8ball', value = 'Magic 8 ball and it answers your burning questions.', inline = false},
-							{name = 'hackban', value = 'Bans users by id. *in development and check bans in server settings to see if its successful ban*', inline = false},
 							{name = 'stop', value = 'Stops or disables the bot. *Bot owner command only!*', inline = false},
 							{name = 'restart', value = 'Restarts the bot. *Bot owner command only!*', inline = false},
 							{name = 'changelog', value = 'Shows you information and version what updated about this bot.', inline = false},
-							{name = 'eval', value = 'Evalulates code in Lua sandbox mode. *In development*', inline = false},
-							{name = 'purge', value = 'Deletes amount of messages given. *Glitched or Bugged*', inline = false},
+							{name = 'purge', value = 'Deletes amount of messages given.', inline = false},
 							{name = 'hug', value = 'Hug someone!', inline = false},
 							{name = 'info', value = 'Tells you information about this bot.', inline = false},
 							{name = 'uptime', value = 'Uptime for this bot.', inline = false}
@@ -135,7 +146,36 @@ client:on('messageCreate', function(message)
 					}
 				}
 				return message.channel:send {
-					content = '**GoldenDragon v1.6**\n+added music function (Still experimental)'
+					content = '**GoldenDragon Dev v1.6**\n+added music function (Still experimental/disabled)\n+added guild log code\n+added systeminfo command\n*modified some code'
+				}
+			end
+
+			if message.content == prefix..'systeminfo' then
+				client:getChannel(logc):send{
+					embed = {
+						title = 'Commands Used',
+						fields = {
+							{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
+							{name = 'Full Information', value = '```'..message.content..'```', inline = false}
+						},
+						color = discordia.Color.fromRGB(255, 215, 0).value,
+						timestamp = discordia.Date():toISO('T', 'Z')
+					}
+				}
+				fmem = uv:get_free_memory()
+				tmem = uv:get_total_memory()
+				function round(t)
+    				return math.round(t*10)*0.1
+				end
+				umem = tmem - fmem
+				message.channel:send{
+					embed = {
+						fields = {
+							{name = 'System Info', value = '**CPU**\nOS: '..ts(ffi.os)..'\nCPU Threads: '..ts(threads)..'\nCPU Model: '..ts(cpumodel)..'\nSystem Uptime: '..ts(discordia.Time.fromSeconds(uv.uptime()))..'\n**Memory**\nTotal: '..round(tmem/1073741824)..'GB\nFree: '..round(fmem/1073741824)..'GB\nUsed: '..round(umem/1073741824)..'GB'}
+						},
+						color = discordia.Color.fromRGB(255, 215, 0).value,
+						timestamp = discordia.Date():toISO('T', 'Z')
+					}
 				}
 			end
 
@@ -233,72 +273,19 @@ client:on('messageCreate', function(message)
 					}
 				}
 			end
-
-			if args[1] == prefix..'read' then
-				if message.member.id == client.owner.id then
-					rconfig()
-				else
-					return message.channel:send('Bot Owner/Developers Only!')
-				end
-			end
-		
-			if args[1] == prefix..'write' then
-				if message.member.id == client.owner.id then
-					table.remove(args, 1)
-					wconfig(table.concat(args, " "))
-				else
-					return message.channel:send('Bot Owner/Developers Only!')
-				end
-			end
 			
-			--if message.content == prefix..'prefix' then
-				--if message.member:hasPermission(8) == true then
-					--if not args[2] then
-						--return message.channel:send('Incomplete command.')
-					--else
-						--pconf = io.open("config.txt", "w")
-						--pconf:write("{'"..message.guild.id.."','"..args[2].."'}")
-						--pconf:close()
-						--return message.channel:send("Prefix saved as `"..args[2].."`")
-					--end
-				--else
-					--return message.channel:send('You do not have enough permissions to perform this command.')
-				--end
-			--end
-
-			if message.content == prefix..'sendnoods' then
-				client:getChannel(logc):send{
-					embed = {
-						title = 'Commands Used',
-						fields = {
-							{name = 'Information', value = '```User: '..message.author.name..'\nGuild: '..message.guild.name..'\nChannel: '..message.channel.name..'\nCommand: '..args[1]..'```', inline = false},
-							{name = 'Full Information', value = '```'..message.content..'```', inline = false}
-						},
-						color = discordia.Color.fromRGB(255, 215, 0).value,
-						timestamp = discordia.Date():toISO('T', 'Z')
-					}
-				}
-				nrand = math.random(1,5)
-				if nrand == 1 then
-					return message.channel:send{
-						file = 'nood1.jpg',
-					}
-				elseif nrand == 2 then
-					return message.channel:send{
-						file = 'nood2.jpg',
-					}
-				elseif nrand == 3 then
-					return message.channel:send{
-						file = 'nood3.png',
-					}
-				elseif nrand == 4 then
-					return message.channel:send{
-						file = 'nood4.jpg',
-					}
-				elseif nrand == 5 then
-					return message.channel:send{
-						file = 'nood5.jpg',
-					}
+			if message.content == prefix..'prefix' then
+				if message.member:hasPermission(8) == true then
+					if not args[2] then
+						return message.channel:send('Incomplete command.')
+					else
+						pconf = io.open("config.txt", "w")
+						pconf:write("{'"..message.guild.id.."','"..args[2].."'}")
+						pconf:close()
+						return message.channel:send("Prefix saved as `"..args[2].."`")
+					end
+				else
+					return message.channel:send('You do not have enough permissions to perform this command.')
 				end
 			end
 
@@ -423,12 +410,11 @@ client:on('messageCreate', function(message)
 				for guild in client.guilds:iter() do
 					out = out + guild.totalMemberCount
 				end
-				gldbot = message.guild:getMember('369244923574091790')
 				return message.channel:send{
 					embed = {
 						title = '**GoldenDragon Dev**',
-						thumbnail = {url = gldbot.avatarURL},
-						description = '**Bot Version**\nV1.4\n**Library**\nDiscordia\n**Lib Version**\n'.._VERSION..'\n**Information**\nThis bot was created and hosted by MLG Golden.\nAnd also has few commands which includes moderation, fun, and soon-to-be community idea given that can be implemented into this bot.\n**Guilds**\n'..#client.guilds..'\n**Members**\n'..out..'\n**Support**\nhttps://discord.gg/G9NcUTE',
+						thumbnail = {url = client.user.avatarURL},
+						description = '**Bot Version**\nV1.6\n**Library**\nDiscordia\n**Lib Version**\n'.._VERSION..'\n**Information**\nThis bot was created and hosted by MLG Golden.\nAnd also has few commands which includes moderation, fun, and soon-to-be community idea given that can be implemented into this bot.\n**Guilds**\n'..#client.guilds..'\n**Members**\n'..out..'\n**Support**\nhttps://discord.gg/G9NcUTE',
 						color = discordia.Color.fromRGB(255, 215, 0).value,
 						timestamp = discordia.Date():toISO('T', 'Z')
 					}
@@ -587,8 +573,6 @@ client:on('messageCreate', function(message)
 					}
 				}
 				table.remove(args,1)
-				timer.sleep(100)
-				message:delete()
 				message.channel:send(table.concat(args,' '))
 			end
 
